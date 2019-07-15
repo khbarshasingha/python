@@ -1,0 +1,9 @@
+import requests
+import json
+def get_movies_from_tastedive(title):
+    para={"q":title,"type":"movies","limit":5,"k":"enter your own api key"}
+    baseurl="https://tastedive.com/api/similar"
+    res=requests.get(baseurl,params=para)
+    print(res.url)
+    print(res.text)
+get_movies_from_tastedive("Black Panther")

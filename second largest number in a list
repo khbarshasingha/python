@@ -1,0 +1,11 @@
+if __name__ == '__main__':
+    n = int(input())
+    arr = list(map(int, input().split()))
+    arr2=[]
+    arr.sort()
+    lar=arr[-1]
+    for x in arr:
+        if x<lar:
+            arr2.append(x)
+    print(arr2[-1])
+        

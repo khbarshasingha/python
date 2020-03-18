@@ -1,26 +1,27 @@
 import pretty_cron
-#cron = open('crontab_list_10_03_2020.txt')
-#clist = cron.readlines()
+import pandas as pd
 
-#print(clist)
-
-#cleanedlist = [line[:10] for line in clist if line[0]!='#']
-#print(cleanedlist)
 time=[]
-clist=[]
+out_dict = {'time_stamp':[], 'file_path':[], 'log_path':[]}
 with open('crontab_list_10_03_2020.txt') as reader:
     for line in reader.readlines():
-        if line[0]!='#' and line[0]!='\n' and line[0]!=' ':
+        if line[0]!='#' and line[0]!='\n' and line[0]!=' ' and line[0]!='M':
             data=line.split(' ')
-            print(data[-1])
-            #time.append(line[:5])
-            #filepath=data[-3]
-            #clist.append(time)
-            #clist.append(filepath)
-        #print(line)
-print(data)
-
-
-#newlist=[pretty_cron.prettify_cron(time) for time in cleanedlist]  
-#print(newlist)  
-
+            out_dict['time_stamp'].append(data[:5])
+            try:
+                sep_index = data.index('>>')
+                if str.lower(data[sep_index+1 if data[sep_index+1]!='' else sep_index+2].strip('\n'))\
+                    .endswith(tuple(['.log', '.out', '.txt', '.cronlog', '.py'])):
+                    out_dict['file_path'].append(data[sep_index-1])
+                    out_dict['log_path'].append(data[sep_index+1 if data[sep_index+1]!='' else sep_index+2])
+                else:
+                    out_dict['file_path'].append(data[-1]) 
+                    out_dict['log_path'].append('')
+                    print('Exception found\n::',data)
+            except ValueError:
+                out_dict['file_path'].append(data[-1]) 
+                out_dict['log_path'].append('')
+                    
+df = pd.DataFrame(out_dict)
+df.to_excel('out.xlsx')
+print('done')
